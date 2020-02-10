@@ -1,0 +1,39 @@
+\documentclass{article}
+
+\usepackage{amsmath,amsthm,amssymb,enumerate,enumitem}
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+
+\newtheorem{lemma}[section]{Lemma}
+\newtheorem{theorem}[section]{Theorem}
+
+%\renewcommand{\implies}{\Rightarrow}
+
+%\newcommand{\im}{\implies}
+
+\newcommand{\bigR}{\mathbb{R}}
+\newcommand{\bigZ}{\mathbb{Z}}
+\newcommand{\bigQ}{\mathbb{Q}}
+\newcommand{\bigN}{\mathbb{N}}
+\newcommand{\eps}{\varepsilon}
+
+\newcommand{\inflim}{\lim_{n \to \infty}}
+
+% 2.1: 1, 3, 6, 10, 15, 16, 17, 18
+
+\begin{document}
+
+The cause of the deadlock through the trivial implementaion in the philosophers, is that they all prioritize picking up the right stick, before the left stick. This could then result in each picking up their right stick at the same time and each then waiting for the left stick, which will never be dropped. The solution I propose is to have one philosopher prioritize his left stick before the right, thereby breaking the cycle. My implementation also uses a fair mutex, in that a waiting philosopher will pickup the stick before the one who dropped it may pick it up again; creating a turn based system for sharing the objects. I claim that this guarantees that any philospher will only wait a finite amount of time before having both sticks.
+
+\begin{theorem}
+  Define set $P = \{p_1, \dots, p_n\}$ to be the set of $n$ philosphers in the circle and $p_k$ be the $k$th philosopher in the circle. Let $p_1$ have swapped stick priorities, i.e. picks up left stick before right stick. Then for any $p \in P$ there is a finite wait time for $p$ to have both sticks.
+\end{theorem}
+
+\begin{proof}
+  Suppose $k = 2$. Then $p_2$ will reach for its right stick. If it's currently being used by $p_3$, then $p_3$ must be eating, since $p_3$ would have gotten it's right stick first, before the left one. Hence $p_2$ needs to only wait for $p_3$ to stop eating, to obtain its right stick. Since the sticks implement a "fair" mutex, $p_3$ will not be able to relock the stick before $p_2$ does. $p_2$ will then reach for the left stick. If it must wait, $p_1$ must be eating based on it's priorities and will release the stick in a finite amount of time. Hence $p_2$ will only wait for a finite period. Given $p_n$ waits a finite amount of time to eat, $p_{n+1}$ by a similar argument does as well. Finally $p1$ will wait for $p_n$ and $p_2$ which will both eat in a finite time.
+\end{proof}
+
+
+\end{document}
